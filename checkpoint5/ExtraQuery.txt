@@ -1,0 +1,17 @@
+
+Select count(track.title)
+From Publisher, Albums,Track
+where Publisher.PublisherID = Albums.PublisherID
+AND Albums.AlbumID = Track.AlbumID
+AND publisher.Name="Douglas Clark";
+
+Select TrackID,Track. title, length
+From Track join Albums on Track.AlbumId = Albums.AlbumID
+Where Albums.title = "Are You Experienced?";
+
+Select videoID, Video.title, Video.year, Video.length
+From Video,Director,createby
+Where createby.DirectorID = Director.DirectorID
+AND video.videoID=createby.VideoID
+And Director.Name = "Mark Brown";
+

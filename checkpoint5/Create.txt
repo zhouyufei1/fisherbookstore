@@ -1,0 +1,181 @@
+create table ArtistType(
+    TypeID int not null,
+    Description varchar(50) not null,
+    primary key(TypeID)
+)
+;
+create table Artists(
+    ArtistID   int    not null,
+    name    varchar(50) not null,
+    TypeID     int not null,
+    primary key(ArtistID),
+    foreign key(TypeID) references Type(TypeID) on update cascade on delete cascade
+)
+;
+
+
+create table Person(
+    SSN char(9) not null,
+    FirstName varchar(50) not null,
+    LastName varchar(50) not null,
+    PhoneNumber char(10) not null,
+    Email varchar(60) not null,
+    primary key(SSN)
+)
+;
+create table Publisher(
+    PublisherID int not null,
+    Name varchar(50) not null,
+    primary key(PublisherID)
+)
+;
+create table Album(
+    AlbumID  int not null,
+    Title   varchar(50) not null,
+    Genre   varchar(50) not null,
+    Year    YYYY        not null,
+    PublisherID  int    not null,
+    primary key(AlbumID)
+    foreign key(PublisherID) references Publisher(PublisherID) on update cascade on delete cascade 
+)
+;
+create table Author(
+    AlbumID int not null,
+    ArtistID int not null,
+    foreign key(AlbumID) references Album(AlbumID) on update cascade on delete cascade,
+    foreign key(ArtistID) references Artists(ArtistID) on update cascade on delete cascade
+)
+;
+create table InternalUser(
+    SSN char(9) not null,
+    EmployeeID int not null,
+    primary key(EmployeeID),
+    foreign key(SSN) references Person(SSN) on update cascade on delete cascade
+)
+;
+create table Customer(
+    SSN char(9) not null,
+    creditCardNum char(16) not null,
+    primary key(SSN),
+    foreign key(SSN) references Person(SSN) on update cascade on delete cascade
+)
+;
+create table LibraryCard(
+    CardID int not null,
+    RegisteringDate DATE not null,
+    Activation Boolean not null,
+    SSN char(9) not null, 
+    primary key(CardID),
+    foreign key(SSN) references Person(SSN) on update cascade on delete cascade
+)
+;
+create table Track(
+    TrackID int not null,
+    Title varchar(50) not null,
+    Length int not null,
+    AlbumID int not null,
+    primary key(TrackID),
+    foreign key(AlbumID) references Album(AlbumID) on update cascade on delete cascade 
+)
+;
+create table Director(
+    DirectorID int not null,
+    Name varchar(50) not null,
+    primary key(DirectorID)
+)
+;
+create table Status(
+    StatusID int not null,
+    Description varchar(50) not null,
+    primary key(StatusID)
+)
+;
+create table Video(
+    VideoID    int    not null,   
+    Title      varchar(50) not null,
+    Genre      varchar(50) not null,
+    Rating     double,
+    Year       YYYY,
+    Length     int    not null,
+    primary key(VideoID)
+)
+;
+
+create table ActedBy(
+    VideoID    int    not null,
+    ArtistID   int    not null,
+    primary key(VideoID,ArtistID),
+    foreign key(VideoID) references Video(VideoID) on update cascade on delete cascade,
+    foreign key(ArtistID) references Artists(ArtistID) on update cascade on delete cascade
+)
+;
+create table CreateBy(
+    VideoID int not null,
+    DirectorID int not null,
+    primary key(VideoID,DirectorID),
+    foreign key(VideoID) references Video(VideoID) on update cascade on delete cascade,
+    foreign key(DirectorID) references Director(DirectorID) on update cascade on delete cascade
+)
+;
+create table Item(
+    ItemID    char(10) not null,
+    StatusID   int not null,
+    AlbumID    int,
+    VideoID    int,
+    primary key(ItemID)
+    foreign key(AlbumID) references Album(AlbumID) on update cascade on delete cascade
+    foreign key(VideoID) references Video(VideoID) on update cascade on delete cascade
+    foreign key(StatusID) references Status(StatusID) on update cascade on delete cascade
+)
+;
+
+create table library_location(
+   LocID int not null,
+   Location varchar(30),
+   primary key(LocID)
+)
+;
+
+create table PhysicalItem(
+    ItemID char(10) not null,
+    Location int not null,
+    primary key(ItemID),
+    foreign key(ItemID) references Item(ItemID) on update cascade on delete cascade,
+    foreign key(Location) references library_location(LocID) on update cascade on delete cascade   
+)
+;
+
+create table digitalItem(
+    ItemID char(10) not null,
+    LicenseNum varchar(50) not null,
+    primary key(ItemID),
+    foreign key(ItemID) references Item(ItemID) on update cascade on delete cascade
+)
+;
+
+create table TransactionRecord(
+    TransactionID int not null,
+    CheckOutDate DATE not null,
+    ReturnDate DATE not null,
+    ExpectedDueDate Date not null,
+    cardID int not null,
+    primary key(TransactionID)
+    foreign key(cardID) references LibararyCard(CardID) on update cascade on delete cascade
+)
+;
+create table ManagedBy(
+    EmployeeID int not null,
+    TransactionID int not null,
+    primary key(EmployeeID,TransactionID),
+    foreign key(TransactionID) references TransactionRecord(TransactionID) on update cascade on delete cascade,
+    foreign key(EmployeeID) references InternalUser(EmployeeID) on update cascade on delete cascade
+)
+;
+create table Recorded(
+    ItemID char(10) not null,
+    TransactionID int not null,
+    primary key(ItemID,TransactionID),
+    foreign key(ItemID) references Item(ItemID) on update cascade on delete cascade
+    foreign key(TransactionID) references TransactionRecord(TransactionID) on update cascade on delete cascade
+)
+;

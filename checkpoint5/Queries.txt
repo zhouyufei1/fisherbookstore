@@ -1,0 +1,46 @@
+Select T.Title
+From Artists AS art, Author AS aut, Albums As alb, Track As T
+WHERE art.ArtistID = aut.ArtistID AND aut.AlbumID = alb.AlbumID 
+AND T.AlbumID = alb.AlbumID AND art.name = "AC/DC"
+AND alb.Year < 2010;
+
+Select a.Title, d.CheckoutDate
+From Video AS a, Item AS b, Recorded AS c, Transactionrecord AS d, LibraryCard AS e, Person AS f
+Where a.VideoID = b.VideoID AND b.ItemID = c.ItemID AND c.TransactionID = d.TransactionID
+And e.CardID = d.CardID AND e.Ssn = f.Ssn AND f.SSN="422378573";
+
+Select *
+from
+(select Albums.Title, Item.ItemID, Count(Item.ItemID) AS Quantity
+From Item left join Albums on Item.AlbumID = Albums.AlbumID
+Group By Item.AlbumID)
+where quantity < 2;
+
+Select Distinct f.Lastname, f.Firstname, a.Title
+From Video AS a, Item AS b, Recorded AS c, Transactionrecord AS d, LibraryCard AS e, Person AS f, Artists AS g, ActedBy AS h
+Where a.VideoID = b.VideoID AND b.ItemID = c.ItemID AND c.TransactionID = d.TransactionID
+And e.CardID = d.CardID AND e.Ssn = f.Ssn AND g.ArtistID = h.ArtistID AND h.VideoID = a.VideoID AND g.name = "AC/DC";
+
+Select person.SSN, person.Firstname, person.Lastname, count(item.itemID)
+From person,item, transactionRecord,LibraryCard,recorded
+Where person.SSN= "902190630"
+AND person.SSN = LibraryCard.SSN
+AND libraryCard.CardID = transactionRecord.cardID
+AND transactionRecord.TransactionID=Recorded.TransactionID
+AND Item.ItemID = recorded.ItemID
+AND Item.statusID="1"
+AND Item.ItemID like 'a%'
+Group by person.SSN;
+
+Select person.SSN, person.Firstname, person.Lastname, count(item.itemID)
+From person, item, transactionrecord, librarycard, recorded, status
+Where person.SSN = libraryCard.SSN
+AND librarycard.CardID = transactionrecord.cardID
+AND transactionRecord.TransactionID=Recorded.TransactionID
+AND Item.ItemID = recorded.ItemID
+AND Item.statusID=Status.StatusID
+AND Status.Description="not available"
+AND Item.ItemID like "v%"
+Group by person.SSN
+order by count(item.itemID)desc
+Limit 1;
